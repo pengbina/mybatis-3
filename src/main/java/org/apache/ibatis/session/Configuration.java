@@ -92,6 +92,20 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
  * @author Clinton Begin
+ *
+ * Mybatis中的配置文件主要封装在configuration中
+ * configuration：根元素
+ * properties:定义配置外在化
+ * settings:一些全局性的配置
+ * typeAliases:为一些类定义别名
+ * typeHandlers:定义类型处理，也就是定义Java类型与数据库中的数据类型之间的转换关系
+ * objectFactory:用于指定结果集对象的实例是如何创建的。
+ * plugins:Mybatis插件，插件可以修改Mybatis内部的运行规则
+ * environments:环境
+ * environment:配置MyBatis的环境
+ * transactionManager:事务管理器
+ * dataSource:数据源
+ * mappers:指定映射文件或映射类
  */
 public class Configuration {
 
