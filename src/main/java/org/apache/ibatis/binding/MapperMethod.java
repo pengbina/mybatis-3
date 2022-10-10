@@ -41,13 +41,17 @@ public class MapperMethod {
   private final MethodSignature method;
 
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
+    //创建SqlCommand对象，该对象包含一些和sql相关的信息
     this.command = new SqlCommand(config, mapperInterface, method);
+    //创建MethodSignature对象，由类名可知，该对象包含了被拦截方法的一些信息
     this.method = new MethodSignature(config, method);
   }
 
+  //根据 SQL 类型执行相应的数据库操作
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
     if (SqlCommandType.INSERT == command.getType()) {
+      // 对用户传入的参数进行转换
       Object param = method.convertArgsToSqlCommandParam(args);
       result = rowCountResult(sqlSession.insert(command.getName(), param));
     } else if (SqlCommandType.UPDATE == command.getType()) {
@@ -57,15 +61,22 @@ public class MapperMethod {
       Object param = method.convertArgsToSqlCommandParam(args);
       result = rowCountResult(sqlSession.delete(command.getName(), param));
     } else if (SqlCommandType.SELECT == command.getType()) {
+      // 根据目标方法的返回类型进行相应的查询操作
       if (method.returnsVoid() && method.hasResultHandler()) {
+        // 如果方法返回值为 void，但参数列表中包含 ResultHandler，表明
+        // 使用者想通过 ResultHandler 的方式获取查询结果，而非通过返回值
+        // 获取结果
         executeWithResultHandler(sqlSession, args);
         result = null;
       } else if (method.returnsMany()) {
+        // 执行查询操作，并返回多个结果
         result = executeForMany(sqlSession, args);
       } else if (method.returnsMap()) {
+        // 执行查询操作，并将结果封装在 Map 中返回
         result = executeForMap(sqlSession, args);
       } else {
         Object param = method.convertArgsToSqlCommandParam(args);
+        // 执行查询操作，并返回一个结果
         result = sqlSession.selectOne(command.getName(), param);
       }
     } else if (SqlCommandType.FLUSH == command.getType()) {
@@ -73,6 +84,7 @@ public class MapperMethod {
     } else {
       throw new BindingException("Unknown execution method for: " + command.getName());
     }
+    // 如果方法的返回值为基本类型，而返回值却为 null，此种情况下应抛出异常
     if (result == null && method.getReturnType().isPrimitive() && !method.returnsVoid()) {
       throw new BindingException("Mapper method '" + command.getName() 
           + " attempted to return null from a method with a primitive return type (" + method.getReturnType() + ").");
@@ -247,10 +259,15 @@ public class MapperMethod {
         final Map<String, Object> param = new ParamMap<Object>();
         int i = 0;
         for (Map.Entry<Integer, String> entry : params.entrySet()) {
+          // 添加 <参数名, 参数值> 键值对到 param 中
           param.put(entry.getValue(), args[entry.getKey().intValue()]);
           // issue #71, add param names as param1, param2...but ensure backward compatibility
           final String genericParamName = "param" + String.valueOf(i + 1);
+          // 检测 names 中是否包含 genericParamName，什么情况下会包含？
+          // 答案如下：
+          // 使用者显式将参数名称配置为 param1，即 @Param("param1")
           if (!param.containsKey(genericParamName)) {
+            // 添加 <param*, value> 到 param 中
             param.put(genericParamName, args[entry.getKey()]);
           }
           i++;

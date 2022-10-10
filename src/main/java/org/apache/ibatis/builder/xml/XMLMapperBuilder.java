@@ -114,7 +114,9 @@ public class XMLMapperBuilder extends BaseBuilder {
       cacheElement(context.evalNode("cache"));
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
       resultMapElements(context.evalNodes("/mapper/resultMap"));
+      //sql标签
       sqlElement(context.evalNodes("/mapper/sql"));
+      //select、insert、update、delete标签
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. Cause: " + e, e);
@@ -390,6 +392,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     return null;
   }
 
+  //Mapper的接口和xml标签的绑定
   private void bindMapperForNamespace() {
     String namespace = builderAssistant.getCurrentNamespace();
     if (namespace != null) {
