@@ -30,6 +30,8 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Eduardo Macarron
+ *
+ * sql语句解析的核心
  */
 public class XMLLanguageDriver implements LanguageDriver {
 

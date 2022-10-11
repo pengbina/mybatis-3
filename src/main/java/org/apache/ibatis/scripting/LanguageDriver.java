@@ -23,6 +23,13 @@ import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.Configuration;
 
+/**
+ * MyBatis 从 3.2 开始支持可插拔的脚本语言，
+ * 因此你可以在插入一种语言的驱动（language driver）之后来写基于这种语言的动态 SQL 查询比如mybatis除了XML格式外，
+ * 还提供了mybatis-velocity，允许使用velocity表达式编写SQL语句。
+ *
+ * 默认情况下，mybatis使用org.apache.ibatis.scripting.xmltags.XMLLanguageDriver。通过调用createSqlSource方法来创建SqlSource
+ */
 public interface LanguageDriver {
 
   /**

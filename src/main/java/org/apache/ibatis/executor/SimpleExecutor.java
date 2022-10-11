@@ -41,10 +41,12 @@ public class SimpleExecutor extends BaseExecutor {
 
   @Override
   public int doUpdate(MappedStatement ms, Object parameter) throws SQLException {
+    // 终于看到原生jdbc的Statement
     Statement stmt = null;
     try {
       Configuration configuration = ms.getConfiguration();
       StatementHandler handler = configuration.newStatementHandler(this, ms, parameter, RowBounds.DEFAULT, null, null);
+      //获取stmt对象
       stmt = prepareStatement(handler, ms.getStatementLog());
       return handler.update(stmt);
     } finally {
@@ -72,7 +74,9 @@ public class SimpleExecutor extends BaseExecutor {
 
   private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
     Statement stmt;
+    // 获取链接信息
     Connection connection = getConnection(statementLog);
+    //创建一个PreparedStatement返回
     stmt = handler.prepare(connection);
     handler.parameterize(stmt);
     return stmt;

@@ -47,6 +47,7 @@ public class MapperMethod {
     this.method = new MethodSignature(config, method);
   }
 
+  //可以看到这里通过判断mapper.xml的insert，update，delete， select调用sqlSession的crud方法。
   //根据 SQL 类型执行相应的数据库操作
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;

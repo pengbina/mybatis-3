@@ -33,6 +33,9 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
 /**
  * @author Clinton Begin
+ *
+ * SqlSession的获取主要是通过SqlSessionFactory的默认实现类DefaultSqlSessionFactory的openSessionFromDataSource
+ * 封装一个DefaultSqlSession(实现SqlSession接口）返回
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
 
@@ -90,9 +93,11 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
   private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
     Transaction tx = null;
     try {
+      // 从配置对象获取数据库链接信息和事物对象
       final Environment environment = configuration.getEnvironment();
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
+      // 创建一个Executor对象，用于后面执行SQL脚本
       final Executor executor = configuration.newExecutor(tx, execType);
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {

@@ -31,6 +31,10 @@ import org.apache.ibatis.session.Configuration;
  * 
  * @since 3.2.0
  * @author Eduardo Macarron
+ *
+ * 静态SQL创建RawSqlSource
+ * 一、静态SQL是动态SQL的一部分；
+ * 二、静态SQL最终被传递给JDBC原生API发送到数据库执行。
  */
 public class RawSqlSource implements SqlSource {
 

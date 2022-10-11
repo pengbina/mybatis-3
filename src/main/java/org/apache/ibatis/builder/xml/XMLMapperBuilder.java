@@ -49,6 +49,8 @@ import org.apache.ibatis.type.TypeHandler;
 
 /**
  * @author Clinton Begin
+ *
+ * Mapper文件的解析主要由XMLMapperBuilder类完成
  */
 public class XMLMapperBuilder extends BaseBuilder {
 
@@ -91,6 +93,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     if (!configuration.isResourceLoaded(resource)) {
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
+      // 绑定mapper的namespace
       bindMapperForNamespace();
     }
 
@@ -407,7 +410,9 @@ public class XMLMapperBuilder extends BaseBuilder {
           // Spring may not know the real resource name so we set a flag
           // to prevent loading again this resource from the mapper interface
           // look at MapperAnnotationBuilder#loadXmlResource
+          // 实际上是把所有的namespace加入到一个Set集合里面
           configuration.addLoadedResource("namespace:" + namespace);
+          // 这里其实是把mapper的类对象通过MapperRegistry对象添加到一个Map里面
           configuration.addMapper(boundType);
         }
       }

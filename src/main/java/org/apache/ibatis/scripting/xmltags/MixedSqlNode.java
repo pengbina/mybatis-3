@@ -29,6 +29,7 @@ public class MixedSqlNode implements SqlNode {
 
   @Override
   public boolean apply(DynamicContext context) {
+    // 遍历每个根SqlNode
     for (SqlNode sqlNode : contents) {
       sqlNode.apply(context);
     }

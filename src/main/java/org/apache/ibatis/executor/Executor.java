@@ -28,6 +28,10 @@ import org.apache.ibatis.transaction.Transaction;
 
 /**
  * @author Clinton Begin
+ *Executor接口的实现类有两个，
+ * 1、CachingExecutor主要是用于二级缓存的数据。
+ * 2、BaseExecutor没有二级缓存直接执行脚本。
+ *
  */
 public interface Executor {
 

@@ -21,6 +21,14 @@ import java.sql.Connection;
  * Creates an {@link SqlSesion} out of a connection or a DataSource
  * 
  * @author Clinton Begin
+ *
+ * 其核心思想就是把config.xml和所有的mapper.xml解析  然后封装到Configuration对象中
+ *
+ *
+ * mybatis通过xml或注解的方式将要执行的各种statement配置起来，
+ * 并通过java对象和statement中sql的动态参数进行映射生成最终执行的sql语句，
+ * 最后由mybatis框架执行sql并将结果映射为java对象并返回。
+ *
  */
 public interface SqlSessionFactory {
 

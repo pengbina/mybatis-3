@@ -31,6 +31,8 @@ import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
  */
 /**
  * @author Clinton Begin
+ *
+ * MyBatis 的初始化流程的入口是 SqlSessionFactoryBuilder 的 build 方法
  */
 public class SqlSessionFactoryBuilder {
 
@@ -46,9 +48,21 @@ public class SqlSessionFactoryBuilder {
     return build(reader, null, properties);
   }
 
+  /**
+   * 构造 SqlSessionFactory 对象
+   * @param reader
+   * @param environment
+   * @param properties
+   * @return
+   */
   public SqlSessionFactory build(Reader reader, String environment, Properties properties) {
     try {
+      // 主要是把配置文件构造成XMLConfigBuilder对象
+      // 通俗的说就是拿到config.xml的inputStream，然后解析xml，把配置的信息封装到parser对象里面
+      // <1> 创建 XMLConfigBuilder 对象
       XMLConfigBuilder parser = new XMLConfigBuilder(reader, environment, properties);
+      // <2> 执行 XML 解析
+      // <3> 创建 DefaultSqlSessionFactory 对象
       return build(parser.parse());
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error building SqlSession.", e);
@@ -74,6 +88,15 @@ public class SqlSessionFactoryBuilder {
     return build(inputStream, null, properties);
   }
 
+  /**
+   * 该函数用来创建一个具体的SqlSessionFactory对象。
+   * 创建DefaultSqlSessionFactory对象， 并将configuration赋值给相应的成员变量
+   *
+   * @param inputStream
+   * @param environment
+   * @param properties
+   * @return
+   */
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);

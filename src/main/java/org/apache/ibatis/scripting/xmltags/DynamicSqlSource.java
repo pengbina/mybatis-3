@@ -24,6 +24,10 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Clinton Begin
+ *
+ * 动态SQL创建 DynamicSqlSource
+ * 动态SQL主要在运行时由上下文调用SqlSource.getBoundSql()接口获取。
+ * 它在处理了动态标签以及${}之后,调用静态SQL构建器返回PreparedStatement，也就是静态SQL形式。
  */
 public class DynamicSqlSource implements SqlSource {
 

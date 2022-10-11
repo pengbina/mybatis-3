@@ -28,16 +28,27 @@ import org.apache.ibatis.session.Configuration;
  * @author Clinton Begin
  */
 public class ResultMap {
+  // resultMap的id属性
   private String id;
+  // resultMap的type属性,有可能是alias
   private Class<?> type;
+  // resultMap下的所有节点
   private List<ResultMapping> resultMappings;
+  // resultMap下的id节点比如<id property="id" column="user_id" />
   private List<ResultMapping> idResultMappings;
+  // resultMap下的构造器节点<constructor>
   private List<ResultMapping> constructorResultMappings;
+  // resultMap下的property节点比如<result property="password" column="hashed_password"/>
   private List<ResultMapping> propertyResultMappings;
+  //映射的列名
   private Set<String> mappedColumns;
+  // 鉴别器
   private Discriminator discriminator;
+  // 是否有嵌套的resultMap比如association或者collection
   private boolean hasNestedResultMaps;
+  // 是否有嵌套的查询,也就是select属性
   private boolean hasNestedQueries;
+  // autoMapping属性,这个属性会覆盖全局的属性autoMappingBehavior
   private Boolean autoMapping;
 
   private ResultMap() {
@@ -75,8 +86,14 @@ public class ResultMap {
       resultMap.constructorResultMappings = new ArrayList<ResultMapping>();
       resultMap.propertyResultMappings = new ArrayList<ResultMapping>();
       for (ResultMapping resultMapping : resultMap.resultMappings) {
+        // 判断是否有嵌套查询, nestedQueryId是在buildResultMappingFromContext的时候通过读取节点的select属性得到的
         resultMap.hasNestedQueries = resultMap.hasNestedQueries || resultMapping.getNestedQueryId() != null;
+        // 判断是否嵌套了association或者collection,
+        // nestedResultMapId是在buildResultMappingFromContext的时候通过读取节点的resultMap属性得到的或者内嵌resultMap的时候自动计算得到的。
+        // 注：这里的resultSet没有地方set进来,DTD中也没有看到，不确定是不是有意预留的，但是association/collection的子元素中倒是有声明
         resultMap.hasNestedResultMaps = resultMap.hasNestedResultMaps || (resultMapping.getNestedResultMapId() != null && resultMapping.getResultSet() == null);
+        // 获取column属性, 包括复合列，复合列是在org.apache.ibatis.builder.MapperBuilderAssistant.parseCompositeColumnName(String)中解析的。
+        // 所有的数据库列都被按顺序添加到resultMap.mappedColumns中
         final String column = resultMapping.getColumn();
         if (column != null) {
           resultMap.mappedColumns.add(column.toUpperCase(Locale.ENGLISH));
@@ -88,19 +105,27 @@ public class ResultMap {
             }
           }
         }
+
+        // 所有映射的构造器被按顺序添加到resultMap.constructorResultMappings
+        // 如果本元素具有CONSTRUCTOR标记,则添加到构造函数参数列表,
+        // 否则添加到普通属性映射列表resultMap.propertyResultMappings
         if (resultMapping.getFlags().contains(ResultFlag.CONSTRUCTOR)) {
           resultMap.constructorResultMappings.add(resultMapping);
         } else {
           resultMap.propertyResultMappings.add(resultMapping);
         }
+
+        // 如果本元素具有ID标记, 则添加到ID映射列表resultMap.idResultMappings
         if (resultMapping.getFlags().contains(ResultFlag.ID)) {
           resultMap.idResultMappings.add(resultMapping);
         }
       }
+      // 如果没有声明ID属性,就把所有属性都作为ID属性
       if (resultMap.idResultMappings.isEmpty()) {
         resultMap.idResultMappings.addAll(resultMap.resultMappings);
       }
       // lock down collections
+      // 为了避免用于无意或者有意事后修改resultMap的内部结构, 克隆一个不可修改的集合提供给用户
       resultMap.resultMappings = Collections.unmodifiableList(resultMap.resultMappings);
       resultMap.idResultMappings = Collections.unmodifiableList(resultMap.idResultMappings);
       resultMap.constructorResultMappings = Collections.unmodifiableList(resultMap.constructorResultMappings);
