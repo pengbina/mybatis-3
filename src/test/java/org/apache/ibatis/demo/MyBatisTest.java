@@ -63,10 +63,10 @@ import java.io.InputStream;
  * 概述：对应 executor 模块
  * 是MyBatis执行器，是MyBatis 调度的核心，负责SQL语句的生成和查询缓存的维护。
  *
- * SQL 语句的执行涉及多个组件 ，其中比较重要的是 Executor、StatementHandler、ParameterHandler 和 ResultSetHandler 。
+ * SQL语句的执行涉及多个组件 ，其中比较重要的是 Executor、StatementHandler、ParameterHandler 和 ResultSetHandler 。
  *
- * Executor 主要负责维护一级缓存和二级缓存，并提供事务管理的相关操作，它会将数据库相关操作委托给 StatementHandler完成。
- * StatementHandler 首先通过 ParameterHandler 完成 SQL 语句的实参绑定，
+ * Executor 主要负责维护一级缓存和二级缓存，并提供事务管理的相关操作，它会将数据库相关操作委托给StatementHandler完成。
+ * StatementHandler 首先通过ParameterHandler完成SQL语句的实参绑定，
  * 然后通过 java.sql.Statement 对象执行 SQL 语句并得到结果集，
  * 最后通过 ResultSetHandler 完成结果集的映射，得到结果对象并返回。
  *

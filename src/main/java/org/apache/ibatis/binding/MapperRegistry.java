@@ -117,7 +117,7 @@ public class MapperRegistry {
     ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<Class<?>>();
     // 无条件的加载所有的类,因为调用方传递了Object.class作为父类,这也给以后的指定mapper接口预留了余地
     resolverUtil.find(new ResolverUtil.IsA(superType), packageName);
-    // 所有匹配的calss都被存储在ResolverUtil.matches字段中
+    // 所有匹配的class都被存储在ResolverUtil.matches字段中
     Set<Class<? extends Class<?>>> mapperSet = resolverUtil.getClasses();
     for (Class<?> mapperClass : mapperSet) {
       //调用addMapper方法进行具体的mapper类/接口解析
