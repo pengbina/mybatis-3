@@ -55,6 +55,7 @@ public class CacheKey implements Cloneable, Serializable {
   }
 
   public void update(Object object) {
+    // ArrayUtil提供了可以计算包括数组的对象的hashCode, toString, equals方法
     if (object != null && object.getClass().isArray()) {
       int length = Array.getLength(object);
       for (int i = 0; i < length; i++) {

@@ -42,10 +42,17 @@ public class MapperRegistry {
   }
 
   /**
-   * 可以看到我们是从 Configuration对象中的MapperRegistry对象通过类对象作为key获取
-   * MapperProxyFactory然后通过jdk的动态代理生成代理对象 （这里也就解释了为什么我们要创建一个
-   * Mapper接口而不是实体类）
+   * 可以看到我们是从 Configuration对象中的MapperRegistry对象通过类对象作为key获取MapperProxyFactory
+   * 然后通过jdk的动态代理生成代理对象 （这里也就解释了为什么我们要创建一个Mapper接口而不是实体类）
    * 里面的addMapper()方法是不是似曾相识。
+   *
+   *
+   * MapperRegistry又将创建代理的任务委托给MapperProxyFactory，
+   * MapperProxyFactory首先为Mapper接口创建了一个实现了InvocationHandler方法调用处理器接口的代理类MapperProxy，
+   * 并实现invoke接口（其中为mapper各方法执行sql的具体逻辑），
+   * 最后才调用JDK的java.lang.reflect.Proxy为Mapper接口创建动态代理类并返回
+   *
+   * 这样当我们应用层执行List users = mapper.getUser2(293);的时候，JVM会首先调用MapperProxy.invoke
    */
   @SuppressWarnings("unchecked")
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {

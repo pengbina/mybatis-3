@@ -56,6 +56,10 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     ps.addBatch();
   }
 
+  /**
+   * 内部调用PreparedStatement完成具体查询后，将ps的结果集传递给对应的结果处理器进行处理。
+   * 查询结果的映射是mybatis作为ORM框架提供的最有价值的功能，同时也可以说是最复杂的逻辑之一。
+   */
   @Override
   public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
     PreparedStatement ps = (PreparedStatement) statement;
@@ -63,9 +67,16 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     return resultSetHandler.<E> handleResultSets(ps);
   }
 
+  /**
+   * 基本上就是把我们在MAPPER中定义的属性转换为JDBC标准的调用。
+   * @param connection
+   * @return
+   * @throws SQLException
+   */
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
     String sql = boundSql.getSql();
+    // 只处理Jdbc3KeyGenerator，因为它代表的是自增，另外一个是SelectKeyGenerator用于不支持自增的情况
     if (mappedStatement.getKeyGenerator() instanceof Jdbc3KeyGenerator) {
       String[] keyColumnNames = mappedStatement.getKeyColumns();
       if (keyColumnNames == null) {
@@ -80,6 +91,14 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     }
   }
 
+  /**
+   * 接下去再来看参数是如何MAPPER中定义的参数是如何转换为JDBC参数的，
+   * PreparedStatementHandler.parameterize将具体实现委托给了ParameterHandler.setParameters()方法，
+   * ParameterHandler目前只有一种实现DefaultParameterHandler
+   *
+   * @param statement
+   * @throws SQLException
+   */
   @Override
   public void parameterize(Statement statement) throws SQLException {
     parameterHandler.setParameters((PreparedStatement) statement);

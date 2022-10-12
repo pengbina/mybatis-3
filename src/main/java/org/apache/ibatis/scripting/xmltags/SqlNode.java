@@ -17,6 +17,14 @@ package org.apache.ibatis.scripting.xmltags;
 
 /**
  * @author Clinton Begin
+ *
+ * SqlNode接口主要用来处理CRUD节点下的各类动态标签比如对每个动态标签，
+ * mybatis都提供了对应的SqlNode实现，这些动态标签可以相互嵌套且实现上采用单向链表进行应用，
+ * 这样后面如果需要增加其他动态标签，就只需要新增对应的SqlNode实现就能支持。
+ * mybatis使用OGNL表达式语言。
+ * 对sqlNode的调用在SQL执行期间的DynamicSqlSource.getBoundSql()方法中，SQL执行过程我们后面会讲解。
+ * 当前版本的SqlNode有下列实现：
+ * 其中MixedSqlNode代表了所有具体SqlNode的集合，其他分别代表了一种类型的SqlNode。
  */
 public interface SqlNode {
   boolean apply(DynamicContext context);

@@ -19,6 +19,13 @@ import org.apache.ibatis.reflection.MetaObject;
 
 /**
  * @author Clinton Begin
+ *
+ * 对象包装器工厂
+ *
+ * ObjectWrapperFactory是一个对象包装器工厂,用于对返回的结果对象进行二次处理,
+ * 它主要在org.apache.ibatis.executor.resultset.DefaultResultSetHandler.getRowValue方法中创建对象的MetaObject时作为参数设置进去,
+ * 这样MetaObject中的objectWrapper属性就可以被设置为我们自定义的ObjectWrapper实现而不是mybatis内置实现
+ *
  */
 public interface ObjectWrapperFactory {
 

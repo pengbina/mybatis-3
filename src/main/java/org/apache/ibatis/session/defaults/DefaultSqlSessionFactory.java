@@ -47,6 +47,7 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
 
   @Override
   public SqlSession openSession() {
+    // 使用默认的执行器类型(默认是SIMPLE)，默认隔离级别，非自动提交 委托给openSessionFromDataSource方法
     return openSessionFromDataSource(configuration.getDefaultExecutorType(), null, false);
   }
 
@@ -95,7 +96,11 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     try {
       // 从配置对象获取数据库链接信息和事物对象
       final Environment environment = configuration.getEnvironment();
+      // 获取事务管理器, 支持从数据源或者直接获取
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+      // 从数据源创建一个事务, 同样,数据源必须配置, mybatis内置了JNDI、POOLED、UNPOOLED三种类型的数据源,
+      // 其中POOLED对应的实现为org.apache.ibatis.datasource.pooled.PooledDataSource,
+      // 它是mybatis自带实现的一个同步、线程安全的数据库连接池 一般在生产中,我们会使用dbcp或者druid连接池
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
       // 创建一个Executor对象，用于后面执行SQL脚本
       final Executor executor = configuration.newExecutor(tx, execType);
@@ -122,6 +127,9 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
       final Transaction tx = transactionFactory.newTransaction(connection);
       final Executor executor = configuration.newExecutor(tx, execType);
+      // 拿到执行器之后，new一个DefaultSqlSession并返回，这样一个SqlSession就创建了，
+      // 它从逻辑上代表一个封装了事务特性的连接，
+      // 如果在此期间发生异常，则调用关闭事务（因为此时事务底层的连接可能已经持有了，否则会导致连接泄露
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error opening session.  Cause: " + e, e);
@@ -131,6 +139,10 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
   }
 
   private TransactionFactory getTransactionFactoryFromEnvironment(Environment environment) {
+    // 如果没有配置environment或者environment的事务管理器为空,则使用受管的事务管理器
+    // 除非什么都没有配置,否则在mybatis-config里面,至少要配置一个environment，此时事务工厂不允许为空
+    // 对于jdbc类型的事务管理器,则返回JdbcTransactionFactory,其内部操作mybatis的JdbcTransaction实现(采用了Facade模式)，
+    // 后者对jdbc连接操作
     if (environment == null || environment.getTransactionFactory() == null) {
       return new ManagedTransactionFactory();
     }

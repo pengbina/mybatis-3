@@ -32,20 +32,26 @@ import org.apache.ibatis.session.Configuration;
  * @author Eduardo Macarron
  *
  * sql语句解析的核心
+ *
+ * LanguageDriver将实际的实现根据采用的底层不同，委托给了具体的Builder，
+ * 对于XML配置，委托给XMLScriptBuilder。
+ * 对于使用Velocity模板的解析器，委托给SQLScriptSource解析具体的SQL
  */
 public class XMLLanguageDriver implements LanguageDriver {
-
+  // 创建参数处理器，返回默认的实现
   @Override
   public ParameterHandler createParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
     return new DefaultParameterHandler(mappedStatement, parameterObject, boundSql);
   }
 
+  // 根据XML定义创建SqlSource
   @Override
   public SqlSource createSqlSource(Configuration configuration, XNode script, Class<?> parameterType) {
     XMLScriptBuilder builder = new XMLScriptBuilder(configuration, script, parameterType);
     return builder.parseScriptNode();
   }
 
+  // 解析注解中的SQL语句
   @Override
   public SqlSource createSqlSource(Configuration configuration, String script, Class<?> parameterType) {
     // issue #3

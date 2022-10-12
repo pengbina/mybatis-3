@@ -80,7 +80,7 @@ public class MapperMethod {
         // 执行查询操作，并返回一个结果
         result = sqlSession.selectOne(command.getName(), param);
       }
-    } else if (SqlCommandType.FLUSH == command.getType()) {
+    } else if (SqlCommandType.FLUSH == command.getType()) {// 主要用于BatchExecutor和CacheExecutor的场景,SimpleExecutor模式不适用
         result = sqlSession.flushStatements();
     } else {
       throw new BindingException("Unknown execution method for: " + command.getName());

@@ -29,6 +29,11 @@ import java.sql.Connection;
  * 并通过java对象和statement中sql的动态参数进行映射生成最终执行的sql语句，
  * 最后由mybatis框架执行sql并将结果映射为java对象并返回。
  *
+ *
+ * 主要有多种形式的重载，除了使用默认设置外，可以指定自动提交模式、特定的jdbc连接、事务隔离级别，以及指定的执行器类型。
+ * 关于执行器类型，mybatis提供了三种执行器类型：SIMPLE, REUSE, BATCH。
+ * 后面我们会详细分析每种类型的执行器的差别以及各自的适用场景。
+ * 我们以最简单的无参方法切入（按照一般的套路，如果定义了多个重载的方法或者构造器，内部实现一定是设置作者认为最合适的默认值，然后调用次多参数的方法，直到最后），
  */
 public interface SqlSessionFactory {
 

@@ -17,6 +17,8 @@ package org.apache.ibatis.scripting.xmltags;
 
 /**
  * @author Clinton Begin
+ *
+ * 静态文本节点不做任何处理，直接将本文本节点的内容追加到已经解析了的SQL文本的后面
  */
 public class StaticTextSqlNode implements SqlNode {
   private String text;

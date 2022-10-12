@@ -24,6 +24,8 @@ import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.Configuration;
 
 /**
+ * 从3.2版本开始，mybatis提供了LanguageDriver接口，我们可以使用该接口自定义SQL的解析方式。
+ *
  * MyBatis 从 3.2 开始支持可插拔的脚本语言，
  * 因此你可以在插入一种语言的驱动（language driver）之后来写基于这种语言的动态 SQL 查询比如mybatis除了XML格式外，
  * 还提供了mybatis-velocity，允许使用velocity表达式编写SQL语句。
@@ -34,7 +36,8 @@ public interface LanguageDriver {
 
   /**
    * Creates a {@link ParameterHandler} that passes the actual parameters to the the JDBC statement.
-   * 
+   * 创建一个ParameterHandler对象，用于将实际参数赋值到JDBC语句中
+   *
    * @author Frank D. Martinez [mnesarco]
    * @see DefaultParameterHandler
    * @param mappedStatement The mapped statement that is being executed
@@ -47,7 +50,8 @@ public interface LanguageDriver {
   /**
    * Creates an {@link SqlSource} that will hold the statement read from a mapper xml file. 
    * It is called during startup, when the mapped statement is read from a class or an xml file.
-   * 
+   * 将XML中读入的语句解析并返回一个sqlSource对象
+   *
    * @param configuration The MyBatis configuration
    * @param script XNode parsed from a XML file
    * @param parameterType input parameter type got from a mapper method or specified in the parameterType xml attribute. Can be null.
@@ -58,7 +62,8 @@ public interface LanguageDriver {
   /**
    * Creates an {@link SqlSource} that will hold the statement read from an annotation.
    * It is called during startup, when the mapped statement is read from a class or an xml file.
-   * 
+   * 将注解中读入的语句解析并返回一个sqlSource对象
+   *
    * @param configuration The MyBatis configuration
    * @param script The content of the annotation
    * @param parameterType input parameter type got from a mapper method or specified in the parameterType xml attribute. Can be null.

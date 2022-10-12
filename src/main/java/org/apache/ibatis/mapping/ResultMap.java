@@ -26,6 +26,8 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Clinton Begin
+ *
+ * ResultMap类维护了每个标签中的详细信息，比如id映射、构造器映射、属性映射以及完整的映射列表、是否有嵌套的resultMap、是否有鉴别器、是否有嵌套查询
  */
 public class ResultMap {
   // resultMap的id属性

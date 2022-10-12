@@ -24,8 +24,9 @@ import org.apache.ibatis.session.Configuration;
  * @author Clinton Begin
  */
 public class Discriminator {
-
+  // 所属的属性节点<result>
   private ResultMapping resultMapping;
+  // 内部的if then映射
   private Map<String, String> discriminatorMap;
 
   Discriminator() {

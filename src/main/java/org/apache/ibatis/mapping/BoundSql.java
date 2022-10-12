@@ -33,13 +33,21 @@ import org.apache.ibatis.session.Configuration;
  */
 /**
  * @author Clinton Begin
+ *
+ * SqlSource中包含的SQL处理动态内容之后的实际SQL语句，SQL中会包含?占位符，也就是最终给JDBC的SQL语句，以及他们的参数信息
+ *
  */
 public class BoundSql {
 
+  // sql文本
   private String sql;
+  // 静态参数说明
   private List<ParameterMapping> parameterMappings;
+  // 运行时参数对象
   private Object parameterObject;
+  // 额外参数，也就是for loops、bind生成的
   private Map<String, Object> additionalParameters;
+  // 额外参数的facade模式包装
   private MetaObject metaParameters;
 
   public BoundSql(Configuration configuration, String sql, List<ParameterMapping> parameterMappings, Object parameterObject) {

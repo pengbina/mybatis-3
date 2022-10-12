@@ -106,6 +106,13 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  * transactionManager:事务管理器
  * dataSource:数据源
  * mappers:指定映射文件或映射类
+ *
+ *
+ *Configuration是mybatis所有配置以及mapper文件的元数据容器。
+ * 无论是解析mapper文件还是运行时执行SQL语句，都需要依赖与mybatis的环境和配置信息，比如databaseId、类型别名等。
+ * mybatis实现将所有这些信息封装到Configuration中并提供了一系列便利的接口方便各主要的调用方使用，
+ * 这样就避免了各种配置和元数据信息到处散落的凌乱。
+ *
  */
 public class Configuration {
 
@@ -551,6 +558,7 @@ public class Configuration {
 
   public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
     StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
+    // 如果有拦截器的话，则为语句处理器新生成一个代理类
     statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
     return statementHandler;
   }
@@ -559,6 +567,13 @@ public class Configuration {
     return newExecutor(transaction, defaultExecutorType);
   }
 
+  /**
+   * 拿到事务后，根据事务和执行器类型创建一个真正的执行器实例
+   * 如果没有配置执行器类型，默认是简单执行器。如果启用了缓存，则使用缓存执行器。
+   * @param transaction
+   * @param executorType
+   * @return
+   */
   public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
     executorType = executorType == null ? defaultExecutorType : executorType;
     executorType = executorType == null ? ExecutorType.SIMPLE : executorType;
@@ -739,6 +754,7 @@ public class Configuration {
     mapperRegistry.addMapper(type);
   }
 
+  //最后调用MapperRegistry.getMapper得到Mapper的实现代理
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     return mapperRegistry.getMapper(type, sqlSession);
   }

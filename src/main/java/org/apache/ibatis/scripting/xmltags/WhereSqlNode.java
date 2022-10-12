@@ -22,6 +22,8 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Clinton Begin
+ *
+ * WhereSqlNode直接委托给TrimSqlNode处理
  */
 public class WhereSqlNode extends TrimSqlNode {
 

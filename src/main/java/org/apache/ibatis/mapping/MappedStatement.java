@@ -30,6 +30,9 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Clinton Begin
+ *
+ * mapper文件或者mapper接口中每个映射语句都对应一个MappedStatement实例，
+ * 它包含了所有运行时需要的信息比如结果映射、参数映射、是否需要刷新缓存等。
  */
 public final class MappedStatement {
 
